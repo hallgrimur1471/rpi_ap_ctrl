@@ -1,4 +1,4 @@
-/****************************************************************************
+3/****************************************************************************
  *
  *   Copyright (c) 2014 MAVlink Development Team. All rights reserved.
  *   Author: Trent Lukaczyk, <aerialhedgehog@gmail.com>
@@ -171,6 +171,16 @@ top (int argc, char **argv)
 void
 commands(Autopilot_Interface &api)
 {
+
+	// --------------------------------------------------------------------------
+	//   WAIT FOR OFFBOARD MODE TRIGGER
+	// --------------------------------------------------------------------------
+
+	while ()
+	{
+		usleep(500000); // check at 2 hz
+	}
+	usleep(100); // give some time to let it sink in
 
 	// --------------------------------------------------------------------------
 	//   START OFFBOARD MODE
