@@ -631,15 +631,15 @@ start()
 	// --------------------------------------------------------------------------
 
 	// Wait for initial position ned
-	//while ( not ( current_messages.time_stamps.local_position_ned &&
-	//			  current_messages.time_stamps.attitude            )  )
-	//{
+	while ( not ( current_messages.time_stamps.local_position_ned &&
+				  current_messages.time_stamps.attitude            )  )
+	{
 		std::cout << "local_position_ned" << current_messages.time_stamps.local_position_ned << "\n";
 		std::cout << "attitude" << current_messages.time_stamps.attitude << "\n";
 		if ( time_to_exit )
 			return;
 		usleep(500000);
-	//}
+	}
 
 	// copy initial position ned
 	Mavlink_Messages local_data = current_messages;
