@@ -196,6 +196,7 @@ Autopilot_Interface(Serial_Port *serial_port_)
 	reading_status = 0;      // whether the read thread is running
 	writing_status = 0;      // whether the write thread is running
 	control_status = 0;      // whether the autopilot is in offboard control mode
+	run_offboard_control = false;
 	time_to_exit   = false;  // flag to signal thread exit
 
 	read_tid  = 0; // read thread id
@@ -253,6 +254,7 @@ read_messages()
 		// ----------------------------------------------------------------------
 		if( success )
 		{
+			//printf("message.msgid: %d\n", message.msgid);
 
 			// Store message sysid and compid.
 			// Note this doesn't handle multiple message sources.
@@ -274,7 +276,7 @@ read_messages()
 
 				case MAVLINK_MSG_ID_SYS_STATUS:
 				{
-					//printf("MAVLINK_MSG_ID_SYS_STATUS\n");
+					printf("MAVLINK_MSG_ID_SYS_STATUS\n");
 					mavlink_msg_sys_status_decode(&message, &(current_messages.sys_status));
 					current_messages.time_stamps.sys_status = get_time_usec();
 					this_timestamps.sys_status = current_messages.time_stamps.sys_status;
@@ -283,7 +285,7 @@ read_messages()
 
 				case MAVLINK_MSG_ID_BATTERY_STATUS:
 				{
-					//printf("MAVLINK_MSG_ID_BATTERY_STATUS\n");
+					printf("MAVLINK_MSG_ID_BATTERY_STATUS\n");
 					mavlink_msg_battery_status_decode(&message, &(current_messages.battery_status));
 					current_messages.time_stamps.battery_status = get_time_usec();
 					this_timestamps.battery_status = current_messages.time_stamps.battery_status;
@@ -292,7 +294,7 @@ read_messages()
 
 				case MAVLINK_MSG_ID_RADIO_STATUS:
 				{
-					//printf("MAVLINK_MSG_ID_RADIO_STATUS\n");
+					printf("MAVLINK_MSG_ID_RADIO_STATUS\n");
 					mavlink_msg_radio_status_decode(&message, &(current_messages.radio_status));
 					current_messages.time_stamps.radio_status = get_time_usec();
 					this_timestamps.radio_status = current_messages.time_stamps.radio_status;
@@ -301,7 +303,7 @@ read_messages()
 
 				case MAVLINK_MSG_ID_LOCAL_POSITION_NED:
 				{
-					//printf("MAVLINK_MSG_ID_LOCAL_POSITION_NED\n");
+					printf("MAVLINK_MSG_ID_LOCAL_POSITION_NED\n");
 					mavlink_msg_local_position_ned_decode(&message, &(current_messages.local_position_ned));
 					current_messages.time_stamps.local_position_ned = get_time_usec();
 					this_timestamps.local_position_ned = current_messages.time_stamps.local_position_ned;
@@ -310,7 +312,7 @@ read_messages()
 
 				case MAVLINK_MSG_ID_GLOBAL_POSITION_INT:
 				{
-					//printf("MAVLINK_MSG_ID_GLOBAL_POSITION_INT\n");
+					printf("MAVLINK_MSG_ID_GLOBAL_POSITION_INT\n");
 					mavlink_msg_global_position_int_decode(&message, &(current_messages.global_position_int));
 					current_messages.time_stamps.global_position_int = get_time_usec();
 					this_timestamps.global_position_int = current_messages.time_stamps.global_position_int;
@@ -319,7 +321,7 @@ read_messages()
 
 				case MAVLINK_MSG_ID_POSITION_TARGET_LOCAL_NED:
 				{
-					//printf("MAVLINK_MSG_ID_POSITION_TARGET_LOCAL_NED\n");
+					printf("MAVLINK_MSG_ID_POSITION_TARGET_LOCAL_NED\n");
 					mavlink_msg_position_target_local_ned_decode(&message, &(current_messages.position_target_local_ned));
 					current_messages.time_stamps.position_target_local_ned = get_time_usec();
 					this_timestamps.position_target_local_ned = current_messages.time_stamps.position_target_local_ned;
@@ -328,7 +330,7 @@ read_messages()
 
 				case MAVLINK_MSG_ID_POSITION_TARGET_GLOBAL_INT:
 				{
-					//printf("MAVLINK_MSG_ID_POSITION_TARGET_GLOBAL_INT\n");
+					printf("MAVLINK_MSG_ID_POSITION_TARGET_GLOBAL_INT\n");
 					mavlink_msg_position_target_global_int_decode(&message, &(current_messages.position_target_global_int));
 					current_messages.time_stamps.position_target_global_int = get_time_usec();
 					this_timestamps.position_target_global_int = current_messages.time_stamps.position_target_global_int;
@@ -337,7 +339,7 @@ read_messages()
 
 				case MAVLINK_MSG_ID_HIGHRES_IMU:
 				{
-					//printf("MAVLINK_MSG_ID_HIGHRES_IMU\n");
+					printf("MAVLINK_MSG_ID_HIGHRES_IMU\n");
 					mavlink_msg_highres_imu_decode(&message, &(current_messages.highres_imu));
 					current_messages.time_stamps.highres_imu = get_time_usec();
 					this_timestamps.highres_imu = current_messages.time_stamps.highres_imu;
@@ -346,16 +348,18 @@ read_messages()
 
 				case MAVLINK_MSG_ID_ATTITUDE:
 				{
-					//printf("MAVLINK_MSG_ID_ATTITUDE\n");
+					printf("MAVLINK_MSG_ID_ATTITUDE\n");
 					mavlink_msg_attitude_decode(&message, &(current_messages.attitude));
 					current_messages.time_stamps.attitude = get_time_usec();
 					this_timestamps.attitude = current_messages.time_stamps.attitude;
+					offboard_start_counter++;
+					this->check_offboard_control();
 					break;
 				}
 
 				default:
 				{
-					// printf("Warning, did not handle message id %i\n",message.msgid);
+					 printf("Warning, did not handle message id %i\n",message.msgid);
 					break;
 				}
 
@@ -548,6 +552,27 @@ toggle_offboard_control( bool flag )
 	return len;
 }
 
+void
+Autopilot_Interface::
+check_offboard_control()
+{
+	printf("CHECK OFFBOARD CONTROL\n");
+	//if (offboard_start_counter == 1 && run_offboard_control == true) {
+	//	run_offboard_control = false;
+	//	offboard_start_counter = 0;
+	//}
+	//else if (offboard_start_counter >= 2) {
+	//	run_offboard_control = true;
+	//	offboard_start_counter = 0;
+	//}
+
+	if (run_offboard_control == true)
+		run_offboard_control = false;
+	else {
+		run_offboard_control = true;
+	}
+}
+
 
 // ------------------------------------------------------------------------------
 //   STARTUP
@@ -568,7 +593,7 @@ start()
 		throw 1;
 	}
 
-
+	//printf("current_messages.sysid: %d \n",current_messages.sysid);
 	// --------------------------------------------------------------------------
 	//   READ THREAD
 	// --------------------------------------------------------------------------
@@ -631,15 +656,15 @@ start()
 	// --------------------------------------------------------------------------
 
 	// Wait for initial position ned
-	while ( not ( current_messages.time_stamps.local_position_ned &&
-				  current_messages.time_stamps.attitude            )  )
-	{
-		std::cout << "local_position_ned" << current_messages.time_stamps.local_position_ned << "\n";
-		std::cout << "attitude" << current_messages.time_stamps.attitude << "\n";
-		if ( time_to_exit )
-			return;
-		usleep(500000);
-	}
+	//while ( not ( current_messages.time_stamps.local_position_ned &&
+	//			  current_messages.time_stamps.attitude            )  )
+	//{
+		//std::cout << "local_position_ned: " << current_messages.time_stamps.local_position_ned << "\n";
+		//std::cout << "attitude: " << current_messages.time_stamps.attitude << "\n";
+	//	if ( time_to_exit )
+	//		return;
+	//	usleep(500000);
+	//}
 
 	// copy initial position ned
 	Mavlink_Messages local_data = current_messages;

@@ -248,6 +248,7 @@ public:
 	char reading_status;
 	char writing_status;
 	char control_status;
+	bool run_offboard_control;
     uint64_t write_count;
 
     int system_id;
@@ -279,6 +280,8 @@ private:
 
 	bool time_to_exit;
 
+    int offboard_start_counter;
+
 	pthread_t read_tid;
 	pthread_t write_tid;
 
@@ -288,6 +291,7 @@ private:
 	void write_thread(void);
 
 	int toggle_offboard_control( bool flag );
+	void check_offboard_control();
 	void write_setpoint();
 
 };

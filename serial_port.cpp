@@ -123,7 +123,7 @@ read_message(mavlink_message_t &message)
 	// this function locks the port during read
 	int result = _read_port(cp);
 
-
+	//printf("result: %d\n", result);
 	// --------------------------------------------------------------------------
 	//   PARSE MESSAGE
 	// --------------------------------------------------------------------------
@@ -131,6 +131,7 @@ read_message(mavlink_message_t &message)
 	{
 		// the parsing
 		msgReceived = mavlink_parse_char(MAVLINK_COMM_1, cp, &message, &status);
+		//printf("msgReceived: %d\n", msgReceived);
 
 		// check for dropped packets
 		if ( (lastStatus.packet_rx_drop_count != status.packet_rx_drop_count) && debug )
