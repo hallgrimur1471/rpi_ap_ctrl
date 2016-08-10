@@ -71,6 +71,10 @@ using namespace std;
 
 #include "autopilot_interface.h"
 #include "serial_port.h"
+#include "logger.h"
+
+#define SSTR( x ) static_cast< std::ostringstream & >( \
+        ( std::ostringstream() << std::dec << x ) ).str()
 
 
 // ------------------------------------------------------------------------------
@@ -80,7 +84,7 @@ using namespace std;
 int main(int argc, char **argv);
 int top(int argc, char **argv);
 
-void commands(Autopilot_Interface &autopilot_interface);
+void commands(Autopilot_Interface &autopilot_interface, Logger &logger);
 void parse_commandline(int argc, char **argv, char *&uart_name, int &baudrate);
 
 // quit handler
