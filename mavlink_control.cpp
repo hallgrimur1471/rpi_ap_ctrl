@@ -183,7 +183,7 @@ commands(Autopilot_Interface &api, Logger &logger)
 	//   START OFFBOARD MODE
 	// --------------------------------------------------------------------------
 
-	// this comment was added by master :Þ
+	// this comment was added by master :)
 
 	while (true) {
 
