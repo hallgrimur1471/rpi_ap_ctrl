@@ -79,6 +79,14 @@ top (int argc, char **argv)
 	parse_commandline(argc, argv, uart_name, baudrate);
 
 
+
+	// --------------------------------------------------------------------------
+	//   LOGGER STARTUP
+	// --------------------------------------------------------------------------
+
+	Logger logger("logs");
+
+
 	// --------------------------------------------------------------------------
 	//   PORT and THREAD STARTUP
 	// --------------------------------------------------------------------------
@@ -132,7 +140,6 @@ top (int argc, char **argv)
 	serial_port.start();
 	autopilot_interface.start();
 
-
 	// --------------------------------------------------------------------------
 	//   RUN COMMANDS
 	// --------------------------------------------------------------------------
@@ -140,7 +147,7 @@ top (int argc, char **argv)
 	/*
 	 * Now we can implement the algorithm we want on top of the autopilot interface
 	 */
-	commands(autopilot_interface);
+	commands(autopilot_interface, logger);
 
 
 	// --------------------------------------------------------------------------
@@ -169,7 +176,7 @@ top (int argc, char **argv)
 // ------------------------------------------------------------------------------
 
 void
-commands(Autopilot_Interface &api)
+commands(Autopilot_Interface &api, Logger &logger)
 {
 
 	// --------------------------------------------------------------------------
@@ -182,16 +189,21 @@ commands(Autopilot_Interface &api)
 
 
 		printf("Waiting for signal to start offboard mode\n");
+		logger.log("Waiting for signal to start offboard mode");
 		while (api.run_offboard_control == 0) {
 			usleep(1000);
 		}
+
 		printf("Starting offboard mode\n");
+		logger.log("Starting offboard mode");
 
 		printf("Waiting for signal to stop offboard mode\n");
+		logger.log("Waiting for signal to stop offboard mode");
 		while (api.run_offboard_control == 1) {
 			usleep(1000);
 		}
 		printf("Stopping offboard mode\n");
+		logger.log("Stopping offboard mode");
 
 		usleep(1000);
 	}
@@ -206,6 +218,7 @@ commands(Autopilot_Interface &api)
 	//   SEND OFFBOARD COMMANDS
 	// --------------------------------------------------------------------------
 	printf("SEND OFFBOARD COMMANDS\n");
+	logger.log("SEND OFFBOARD COMMANDS");
 
 	// initialize command data strtuctures
 	mavlink_set_position_target_local_ned_t sp;
@@ -240,6 +253,7 @@ commands(Autopilot_Interface &api)
 	{
 		mavlink_local_position_ned_t pos = api.current_messages.local_position_ned;
 		printf("%i CURRENT POSITION XYZ = [ % .4f , % .4f , % .4f ] \n", i, pos.x, pos.y, pos.z);
+		logger.log(SSTR(i) + "CURRENT POSITION XYZ = [ " + SSTR(pos.x) + " , " + SSTR(pos.y) + " , " + SSTR(pos.z) + " ] \n");
 		sleep(1);
 	}
 
