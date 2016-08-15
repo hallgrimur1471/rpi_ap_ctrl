@@ -664,19 +664,19 @@ start()
 	// --------------------------------------------------------------------------
 
 	// Wait for initial position ned
-	while ( not ( current_messages.time_stamps.local_position_ned &&
-				  current_messages.time_stamps.attitude            )  )
-	{
-		std::cout << "current_messages.time_stamps.local_position_ned: " << current_messages.time_stamps.local_position_ned << "\n";
-		std::cout << "current_messages.time_stamps.attitude: " << current_messages.time_stamps.attitude << "\n";
-		std::cout << "attitude.roll: " << current_messages.attitude.roll << "\n";
-		std::cout << "attitude.pitch: " << current_messages.attitude.pitch << "\n";
-		std::cout << "attitude.yaw: " << current_messages.attitude.yaw << "\n";
-		std::cout << "\n";
-		if ( time_to_exit )
-			return;
-		usleep(500000);
-	}
+	//while ( not ( current_messages.time_stamps.local_position_ned &&
+	//			  current_messages.time_stamps.attitude            )  )
+	//{
+	//	std::cout << "current_messages.time_stamps.local_position_ned: " << current_messages.time_stamps.local_position_ned << "\n";
+	//	std::cout << "current_messages.time_stamps.attitude: " << current_messages.time_stamps.attitude << "\n";
+	//	std::cout << "attitude.roll: " << current_messages.attitude.roll << "\n";
+	//	std::cout << "attitude.pitch: " << current_messages.attitude.pitch << "\n";
+	//	std::cout << "attitude.yaw: " << current_messages.attitude.yaw << "\n";
+	//	std::cout << "\n";
+	//	if ( time_to_exit )
+	//		return;
+	//	usleep(500000);
+	//}
 
 	// copy initial position ned
 	Mavlink_Messages local_data = current_messages;
