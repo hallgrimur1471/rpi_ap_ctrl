@@ -362,7 +362,7 @@ read_messages()
 					printf("MAVLINK_MSG_ID_COMMAND_ACK");
 					mavlink_msg_command_ack_decode(&message, &(current_messages.command_ack));
 					this_timestamps.command_ack = current_messages.time_stamps.command_ack;
-					printf("current_messages.command_ack.result: %d",current_messages.command_ack.result);
+					printf("current_messages.command_ack.result: %d\n",current_messages.command_ack.result);
 				}
 
 				default:
