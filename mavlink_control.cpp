@@ -211,7 +211,6 @@ commands(Autopilot_Interface &api, Logger &logger)
 	api.enable_offboard_control();
 	usleep(100); // give some time to let it sink in
 
-	sleep(8);
 
 	// now the autopilot is accepting setpoint commands
 
@@ -234,6 +233,9 @@ commands(Autopilot_Interface &api, Logger &logger)
 				  -1.0       , // [m/s]
 				   0.0       , // [m/s]
 				   sp        );
+
+	
+	sleep(8);
 
 	// Example 2 - Set Position
 //	 set_position( ip.x - 5.0 , // [m]
