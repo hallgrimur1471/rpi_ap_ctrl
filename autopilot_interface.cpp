@@ -348,7 +348,7 @@ read_messages()
 
 				case MAVLINK_MSG_ID_ATTITUDE:
 				{
-					//printf("MAVLINK_MSG_ID_ATTITUDE\n");
+					printf("MAVLINK_MSG_ID_ATTITUDE\n");
 					mavlink_msg_attitude_decode(&message, &(current_messages.attitude));
 					current_messages.time_stamps.attitude = get_time_usec();
 					this_timestamps.attitude = current_messages.time_stamps.attitude;
