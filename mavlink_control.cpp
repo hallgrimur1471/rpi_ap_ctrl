@@ -211,6 +211,8 @@ commands(Autopilot_Interface &api, Logger &logger)
 	api.enable_offboard_control();
 	usleep(100); // give some time to let it sink in
 
+	usleep(8000000)
+
 
 	// now the autopilot is accepting setpoint commands
 
