@@ -188,11 +188,11 @@ commands(Autopilot_Interface &api, Logger &logger)
 	//while (true) {
 
 
-		printf("Waiting for signal to start offboard mode\n");
-		logger.log("Waiting for signal to start offboard mode");
-		while (api.run_offboard_control == 0) {
-			usleep(1000);
-		}
+		//printf("Waiting for signal to start offboard mode\n");
+		//logger.log("Waiting for signal to start offboard mode");
+		//while (api.run_offboard_control == 0) {
+		//	usleep(1000);
+		//}
 
 		printf("Starting offboard mode\n");
 		logger.log("Starting offboard mode");
@@ -205,7 +205,7 @@ commands(Autopilot_Interface &api, Logger &logger)
 		//printf("Stopping offboard mode\n");
 		//logger.log("Stopping offboard mode");
 
-		usleep(1000);
+		//usleep(1000);
 	//}
 
 	api.enable_offboard_control();
